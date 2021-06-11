@@ -1,0 +1,180 @@
+2)	import java.io.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+public class Main {
+    public static void main(String[] args) {
+        Task task = new Task();
+        task.print();
+        System.out.println("=====================");
+        task.input();
+        //task.input();
+       // task.input();
+        System.out.println("=====================");
+        task.print();
+        System.out.println("=====================");
+        task.printMidNumOfMonth();
+    }
+}
+3)	public class Day {
+
+    int day;
+    int month;
+    int temp;
+
+    public Day(int day, int month, int temp) {
+        this.day = day;
+        this.month = month;
+        this.temp = temp;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getTemp() {
+        return temp;
+    }
+
+    public void setTemp(int temp) {
+        this.temp = temp;
+    }
+}
+4)	import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+
+public class Task {
+
+    List<Day> days = new ArrayList<>();
+
+    public Task() {
+        days.add(new Day(1, 2, 10));
+        days.add(new Day(2, 2, 23));
+        days.add(new Day(12, 2, -11));
+        days.add(new Day(1, 1, 23));
+        days.add(new Day(12, 5, 63));
+        days.add(new Day(2, 8, 24));
+        days.add(new Day(5, 8, 10));
+        days.add(new Day(6, 11, 3));
+    }
+
+    public void input() throws IllegalArgumentException {
+        System.out.println("Введіть день:");
+        String text = getString();
+        if(!text.matches("[0-9]+"))
+            throw new IllegalArgumentException("Ви ввели не коректні дані!");
+        int day = Integer.parseInt(text);
+        if(day < 1 || day > 30)
+            throw new IllegalArgumentException("Діапазон для вводу дня є [1 : 30]!");
+
+        System.out.println("Введіть місяць:");
+        text = getString();
+        if(!text.matches("[0-9]+"))
+            throw new IllegalArgumentException("Ви ввели не коректні дані!");
+        int month = Integer.parseInt(text);
+        if(month < 1 || month > 12)
+            throw new IllegalArgumentException("Діапазон для вводу місяця є [1 : 30]!");
+
+        for(Day d : days) {
+            if(d.day == day && d.month == month) {
+                throw new IllegalArgumentException("така дата вже зайнята!");
+            }
+        }
+
+        System.out.println("Введіть темпаратура:");
+        text = getString();
+        if(!text.matches("[-]?[0-9]+"))
+            throw new IllegalArgumentException("Ви ввели не коректні дані!");
+        int temp = Integer.parseInt(text);
+
+        days.add(new Day(day, month, temp));
+        System.out.println("Ви успішно добавили дату!");
+    }
+
+    public void print() {
+        days = days.stream().sorted(Comparator.comparing(Day::getMonth)).collect(Collectors.toList());
+        for(Day day : days) {
+            System.out.println(day.day + "/" + day.month + "/2020  - \t" + day.temp);
+        }
+    }
+
+    public void printMidNumOfMonth() {
+        float midTemp = 0;
+        int size = 0;
+        float maxMidTemp = -100;
+        int maxMonth = -1;
+        int maxSize = -1;
+        for (int i = 1; i <= 12; i++) {
+            for(Day day : days) {
+                if(day.getMonth() == i) {
+                    midTemp += day.getTemp();
+                    size++;
+                }
+            }
+            if(size != 0) {
+                if(midTemp > maxMidTemp) {
+                    maxMonth = i;
+                    maxSize = size;
+                    maxMidTemp = midTemp;
+                }
+                System.out.println(getNameOfMonth(i) + "   \t = " + String.format("%.2f", midTemp / size) + " / " + size);
+            }
+            midTemp = 0;
+            size = 0;
+        }
+        System.out.println("MAX:\n"+ getNameOfMonth(maxMonth) + " \t = " + String.format("%.2f", maxMidTemp / maxSize) + " / " + maxSize);
+    }
+
+    private String getNameOfMonth(int month) {
+        switch (month) {
+            case 1:
+                return "Січень";
+            case 2:
+                return "Лютий";
+            case 3:
+                return "Березень";
+            case 4:
+                return "Квітень";
+            case 5:
+                return "Травень";
+            case 6:
+                return "Червень";
+            case 7:
+                return "Липень";
+            case 8:
+                return "Серпень";
+            case 9:
+                return "Вересень";
+            case 10:
+                return "Жовтень";
+            case 11:
+                return "Листопад";
+            case 12:
+                return "Грудень";
+        }
+        return null;
+    }
+
+    public String getString() {
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextLine();
+    }
+
+}
